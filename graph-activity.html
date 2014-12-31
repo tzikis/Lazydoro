@@ -1,0 +1,239 @@
+<html>
+<canvas id="box" height="500" width="20000"></canvas>
+<canvas id="activity" height="500" width="20000"></canvas>
+<script src="javascripts/harry.min.js"></script>
+<script>
+/*
+    harry({
+        canvas:'box',
+        datas:[1,2,4,8,4,2,1],
+        mode:'curve',
+        fill:'vertical'
+    });
+*/
+</script>
+
+<script>
+    /*
+    
+plotter({
+   container:"plot",
+   datas:[{title:"joker",values:[59,21,30,86,5,75,24,92,80,11,22,83,19,91,99,74]},{title:"batman",values:[51,52,47,6,5,86,95,93,96,22,55,49,21,21,6,49]}],
+   labels:{
+      color:"#fff",
+      marks:2,
+      ypos:"left",
+      x:3,
+      y:[50,100]
+   },
+   mode:"line",
+   fill:"none",
+   opacity:0.5,
+   background:"#666",
+   linewidth:3,
+   autoscale:"top",
+   mouseover:{
+      radius:4,
+      linewidth:2,
+      circle:"#fff",
+      bullet:"#444",
+      axis:"x",
+      shadowbox:"1,1,0,#000"
+   },
+   legends:{
+      color:"#fff",
+      shadow:"1,1,0,#000",
+   }
+})
+    */
+</script>
+
+<script src="standing.js"></script>
+
+<script src="sitting-x.js"></script>
+<script src="sitting-y.js"></script>
+<script src="sitting-z.js"></script>
+
+<script src="walking-x.js"></script>
+<script src="walking-y.js"></script>
+<script src="walking-z.js"></script>
+
+<script>
+
+
+window.sumValues_standing = [];
+for(i = 0; i < xValues_standing.length; i++)
+{
+	sumValues_standing.push(Math.sqrt(xValues_standing[i]*xValues_standing[i] + yValues_standing[i]*yValues_standing[i] + zValues_standing[i]*zValues_standing[i]));
+}
+
+window.sumValues_sitting = [];
+for(i = 0; i < X_sitting.length; i++)
+{
+	sumValues_sitting.push(Math.sqrt(X_sitting[i]*X_sitting[i] + Y_sitting[i]*Y_sitting[i] + Z_sitting[i]*Z_sitting[i]));
+}
+
+
+window.sumValues_walking = [];
+for(i = 0; i < X_walking.length; i++)
+{
+	sumValues_walking.push(Math.sqrt(X_walking[i]*X_walking[i] + Y_walking[i]*Y_walking[i] + Z_walking[i]*Z_walking[i]));
+}
+
+//Measure activity
+var diff = 0.3;
+var fake_accel = 2;
+
+window.act_standing = [];
+window.activity_standing = [];
+for(i = 0; i < sumValues_standing.length; i = i + 20)
+{
+	var min = 100;
+	var max = 0;
+	if(typeof sumValues_standing[i+j] != "undefined")
+	{
+		for(var j = 0; j < 20; j++)
+		{
+			if(sumValues_standing[i+j] < min)
+				min  = sumValues_standing[i+j];
+			else if(sumValues_standing[i+j] > max)
+				max = sumValues_standing[i+j];
+		}
+	}
+	if(max - min > diff && max - min < fake_accel)
+	{
+		for(var j = 0; j < 20; j++)
+			window.activity_standing.push(2.3);
+		window.act_standing.push(2.3);
+	}
+	else
+	{
+		for(var j = 0; j < 20; j++)
+			window.activity_standing.push(2);
+		window.act_standing.push(2);
+	}
+}
+
+window.act_sitting = [];
+window.activity_sitting = [];
+for(i = 0; i < sumValues_sitting.length; i = i + 20)
+{
+	var min = 100;
+	var max = 0;
+	if(typeof sumValues_sitting[i+j] != "undefined")
+	{
+		for(var j = 0; j < 20; j++)
+		{
+			if(sumValues_sitting[i+j] < min)
+				min  = sumValues_sitting[i+j];
+			else if(sumValues_sitting[i+j] > max)
+				max = sumValues_sitting[i+j];
+		}
+	}
+	if(max - min > diff && max - min < fake_accel)
+	{
+		for(var j = 0; j < 20; j++)
+			window.activity_sitting.push(2.8);
+		window.act_sitting.push(2.8);
+	}
+	else
+	{
+		for(var j = 0; j < 20; j++)
+			window.activity_sitting.push(2.5);
+		window.act_sitting.push(2.5);
+	}
+}
+
+window.act_walking = [];
+window.activity_walking = [];
+for(i = 0; i < sumValues_walking.length; i = i + 20)
+{
+	var min = 100;
+	var max = 0;
+	if(typeof sumValues_walking[i+j] != "undefined")
+	{
+		for(var j = 0; j < 20; j++)
+		{
+			if(sumValues_walking[i+j] < min)
+				min  = sumValues_walking[i+j];
+			else if(sumValues_walking[i+j] > max)
+				max = sumValues_walking[i+j];
+		}
+	}
+	if(max - min > diff && max - min < fake_accel)
+	{
+		for(var j = 0; j < 20; j++)
+			window.activity_walking.push(3.3);
+		window.act_walking.push(3.3);
+	}
+	else
+	{
+		for(var j = 0; j < 20; j++)
+			window.activity_walking.push(3);
+		window.act_walking.push(3);
+	}
+}
+
+    harry({
+        canvas:'box',
+   datas:[
+	   /*
+	   {title:"X_standing",values:xValues_standing},
+	   {title:"Y_standing",values:yValues_standing},
+	   {title:"Z_standing",values:zValues_standing},
+	   {title:"X_sitting",values:X_sitting},
+	   {title:"Y_standing",values:Y_sitting},
+	   {title:"Z_standing",values:Z_sitting},
+	   */
+	   {title:"abs_sum_standing", values:sumValues_standing},
+	   {title:"abs_sum_sitting", values:sumValues_sitting},
+	   {title:"abs_sum_walking", values:sumValues_walking},
+	   {title:"activity_standing", values:activity_standing},
+	   {title:"activity_sitting", values:activity_sitting},
+	   {title:"activity_walking", values:activity_walking}
+   ],
+	    mode:"line",
+	    fill:"none",
+	    opacity:0.5,
+	    linewidth:3,
+	   labels:{x:1},
+	    mouseover:{
+	       radius:4,
+	       linewidth:2,
+	       circle:"#fff",
+	       bullet:"#444",
+	       axis:"x",
+	       shadowbox:"1,1,0,#000"
+	    },
+    });
+
+
+    harry({
+        canvas:'activity',
+   datas:[
+	   {title:"activity_standing", values:act_standing},
+	   {title:"activity_sitting", values:act_sitting},
+	   {title:"activity_walking", values:act_walking}
+   ],
+	    mode:"line",
+	    fill:"none",
+	    opacity:0.5,
+	    linewidth:3,
+	   labels:{x:1},
+	    mouseover:{
+	       radius:4,
+	       linewidth:2,
+	       circle:"#fff",
+	       bullet:"#444",
+	       axis:"x",
+	       shadowbox:"1,1,0,#000"
+	    },
+    });
+</script>
+
+
+
+<body>
+	
+</body>
+</html>
